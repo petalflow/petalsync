@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
-from config.db import ConnectionDestination, Project
+from model.db import ConnectionDestination, Project
 from mysql.connector import connect
 
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from config.dbConfig import db, router
-from config.db import ConnectionDestination
+from model.db import ConnectionDestination
 from schemas.schemas import ConnectionDestinationModel, ConnectionDestinationSaveModel
 
 

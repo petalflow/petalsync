@@ -3,17 +3,17 @@ from fastapi import Depends, Header, HTTPException
 from typing import Dict
 from typing import List
 from config.dbConfig import router
-from config.db import Time
+from model.db import Time
 from schemas.schemas import TimeModel, TimeSaveModel
 from datetime import datetime, time
 
 
-@router.get("/times", response_model=List[TimeModel], tags=['Time'])
+@router.get("/GetAllTimes", response_model=List[TimeModel], tags=['Time'])
 def get_times():
     times = Time.objects().all()
     return [TimeModel.from_orm(time) for time in times]
 
-@router.get("/times/{id_project}", response_model=TimeModel, tags=['Time'])
+@router.get("/GetTimesId/{id_project}", response_model=TimeModel, tags=['Time'])
 def get_time(id_project: int):
     time = Time.objects(id_project=id_project).first()
     if time:
@@ -21,7 +21,7 @@ def get_time(id_project: int):
     else:
         raise HTTPException(status_code=404, detail="Time not found")
 
-@router.post("/times", response_model=TimeModel, tags=['Time'])
+@router.post("/CreateTimes", response_model=TimeModel, tags=['Time'])
 def create_time(time: TimeSaveModel):
     new_time = Time(
         id_project=time.id_project,
@@ -33,7 +33,7 @@ def create_time(time: TimeSaveModel):
 
 
 
-@router.put("/times/{id_time}", response_model=TimeModel, tags=['Time'])
+@router.put("/UpdateTimes/{id_time}", response_model=TimeModel, tags=['Time'])
 def update_time(id_time: int, time: TimeModel):
     updated_time = Time.objects(id_time=id_time).first()
     if updated_time:
@@ -44,7 +44,7 @@ def update_time(id_time: int, time: TimeModel):
     else:
         raise HTTPException(status_code=404, detail="Time not found")
 
-@router.delete("/times/{id_time}", response_model=TimeModel, tags=['Time'])
+@router.delete("/DeleteTimes/{id_time}", response_model=TimeModel, tags=['Time'])
 def delete_time(id_time: int):
     deleted_time = Time.objects(id_time=id_time).first()
     if deleted_time:

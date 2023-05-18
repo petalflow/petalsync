@@ -1,11 +1,11 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from config.dbConfig import db, router
-from config.db import Log
+from model.db import Log
 from schemas.schemas import LogModel, LogSaveModel
 
 
-@router.get("/logs/{id_project}", response_model=LogModel, tags=['Log'])
+@router.get("/GetlogId/{id_project}", response_model=LogModel, tags=['Log'])
 def get_log(id_project: int):
     try:
         log = Log.objects(id_project=id_project).first()
@@ -24,7 +24,7 @@ def get_log(id_project: int):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/logs", response_model=List[LogModel], tags=['Log'])
+@router.get("/GetAlllog", response_model=List[LogModel], tags=['Log'])
 def get_all_logs():
     logs = Log.objects().all()
     log_list = []
@@ -40,7 +40,7 @@ def get_all_logs():
     return log_list
 
 
-@router.post("/logs", response_model=LogModel, tags=['Log'])
+@router.post("/Createlog", response_model=LogModel, tags=['Log'])
 def create_log(log: LogSaveModel):
     new_log = Log(
         id_project=log.id_project,

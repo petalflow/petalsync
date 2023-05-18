@@ -2,11 +2,11 @@ from fastapi import Depends, Header, HTTPException
 from typing import Dict
 from typing import List
 from config.dbConfig import router
-from config.db import Query
+from model.db import Query
 from schemas.schemas import QuerySaveModel, QueryModel
 
 
-@router.post("/queries", response_model=QuerySaveModel, tags=['Query'])
+@router.post("/CreateQueries", response_model=QuerySaveModel, tags=['Query'])
 def create_query(query: QuerySaveModel):
     new_query = Query(
         id_project=query.id_project,
@@ -18,7 +18,7 @@ def create_query(query: QuerySaveModel):
     new_query.save()
     return query
 
-@router.get("/queries/{id_query}", response_model=QueryModel, tags=['Query'])
+@router.get("/GetQueriesId/{id_query}", response_model=QueryModel, tags=['Query'])
 def get_query(id_query: int):
     try:
         query = Query.objects(id_query=id_query).first()
@@ -38,7 +38,7 @@ def get_query(id_query: int):
         return {"error": str(e)}
 
 
-@router.get("/queries/{id_project}/", response_model=QueryModel, tags=['Query'])
+@router.get("/GetqueriesIdprojects/{id_project}/", response_model=QueryModel, tags=['Query'])
 def get_query(id_project: int):
     try:
         query = Query.objects(id_project=id_project).first()
@@ -58,7 +58,7 @@ def get_query(id_project: int):
         return {"error": str(e)}
 
 
-@router.put("/queries/{id_query}", response_model=QueryModel, tags=['Query'])
+@router.put("/UpdateQueries/{id_query}", response_model=QueryModel, tags=['Query'])
 def update_query(id_query: int, query: QuerySaveModel):
     try:
         existing_query = Query.objects(id_query=id_query).first()
@@ -75,7 +75,7 @@ def update_query(id_query: int, query: QuerySaveModel):
     except Exception as e:
         return {"error": str(e)}
     
-@router.delete("/queries/{id_query}", response_model=Dict[str, str], tags=['Query'])
+@router.delete("/DeleteQueries/{id_query}", response_model=Dict[str, str], tags=['Query'])
 def delete_query(id_query: int):
     deleted_query = Query.objects(id_query=id_query).first()
     if deleted_query:

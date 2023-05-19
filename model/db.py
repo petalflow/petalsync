@@ -56,7 +56,7 @@ class Time(Document):
         super().clean()
 
         if self.time:
-            time_pattern = re.compile(r'^\d{2}:\d{2}$')
+            time_pattern = re.compile(r'^\d{2}:\d{2}:\d{2}$')
             if not time_pattern.match(str(self.time)):
                 raise ValidationError("Invalid time format. Expected format: HH:MM")
 

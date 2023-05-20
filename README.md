@@ -1,5 +1,5 @@
 
-## Convutell
+### Convutell
 
 É uma aplicação web/API criada com o framework FastAPI do Python. A aplicação se conecta a um banco de dados e permite realizar consultas SQL através de uma interface web bem como agendar script python e sql com intervalos de operações de transferência e persistência em banco de dados em diferentes servidores. 
 
@@ -24,7 +24,7 @@ As biliotecas corresponde a todas as aplicações do projeto.
 - [Pydotenv](https://pypi.org/project/pydotenv/): Biblioteca do python para gerenciar variaveis de ambientes.
 
 
-## API de Integração
+### API de Integração
 
 A api de integração é construída sobre o fastapi e permite a princípio a gestão das informações disposta em base NoSQL, sendo também consumido pelo serviço de transferência de dados. Para este projeto optamos por utilizar o MongoDB.
 
@@ -70,18 +70,45 @@ O API de integração é construída sobre o FastAPI *0.95.1* e o Python 3.7. To
 ```bash
 uvicorn app:app --reload
 ```
-#### Instalando no Docker
+### Instalando no Docker
 
-A imagem do docker da aplicação está em construção. 
+Configure o arquivo `Dockerfile` para adequar a configuração ideal do seu ambiente. Esta implementação do projeto para a imagem docker está em desevolvimento, portanto cabe avaliar a viabilidade das configuração dispostas. 
+
+```bash
+docker build -t nome_do_projeto:latest .
+```
+Use o comando abaixo para inicar o seu container. 
+
+```bash
+docker run -d -p 8000:8000 nome_do_projeto:latest
+```
+
+Optamos por utilizar o Supervisor para monitoramento e controle dos nossos processos. Tanto a API como Processo de ETL será monitorados pelo Supervisor. Toda a configuração será passada para o controle do Supervidor através do arquivo `supervisord.conf`.
+
+```bash
+
+[program:etl]
+command=/opt/venv/bin/python /convutell/etl.py
+directory=/convutell
+autostart=true
+autorestart=true
+startretries=3
+redirect_stderr=true
+stdout_logfile=/convutell/logs/etl/etl.log
+stdout_logfile_maxbytes=10MB
+```
+O código apresentado configura um processo chamado "etl" usando o Supervisor. Esse processo é executado por um comando específico, que é a execução de um arquivo Python chamado "etl.py" dentro de um ambiente virtual. O diretório de trabalho para esse processo é definido com o mesmo nome do diretório da nossa aplicação "/convutell". O processo é configurado para iniciar automaticamente e reiniciar em caso de falha, com um máximo de três tentativas de inicialização. Os erros de saída são redirecionados para o arquivo de log "etl.log", localizado na pasta de logs "/convutell/logs/etl", e o tamanho máximo desse arquivo de log é limitado a 10MB. Essa configuração garante que o processo "etl" seja gerenciado pelo Supervisor, registrando sua saída e reiniciando-o automaticamente se necessário.
 
 ### Interface Web
 
-Algumas funcionalidades já implementadas e em desenvolvimento.
+Algumas funcionalidades em desenvolvimento.
 
 - Gerenciamento de consultas.
 - Conexões internas e externas para diferentes projetos. 
 - Análise de Logs de transações
-- Ambiente de execução Python **Recurso em desenvolvimento**
+- Ambiente de execução Python
+- Notificações de falhas direto na aplicação
+- Compartilhamento de projetos
 
 ## Etiquetas
 

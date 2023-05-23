@@ -18,13 +18,10 @@ class ConexaoBancoDados:
     def conectar(self):
         if self.ds_conexao.startswith('mysql'):
             self.engine = create_engine(self.ds_conexao)
-            print("Conectado ao banco de dados MySQL")
         elif self.ds_conexao.startswith('postgresql'):
             self.engine = create_engine(self.ds_conexao)
-            print("Conectado ao banco de dados PostgreSQL")
         elif self.ds_conexao.startswith('sqlite'):
             self.engine = create_engine(self.ds_conexao)
-            print("Conectado ao banco de dados SQLite")
         else:
             raise ValueError("Tipo de conexão não suportado")
         
@@ -52,14 +49,15 @@ class Logger:
         )
         log.save()
 
-
 class DataMigration:
     def __init__(self):
         self.metadata = sqlalchemy.MetaData()
 
     def migrate_data(self):
-        current_time = '22:53:00'
-        times = Time.objects(time=current_time)
+        current_time = datetime.now().time()
+        current_time_str = current_time.strftime("%H:%M:%S")  
+        times = Time.objects(time=current_time_str)
+
         connections_list = []
 
         for time_obj in times:
@@ -71,12 +69,12 @@ class DataMigration:
                 connection_origin2 = project.connection_origin2
 
                 connections = ConnectionDestination.objects(id_connection__in=[connection_origin1, connection_origin2])
-
+                
                 for connection in connections:
                     connection_info = {
                         "ID Project": project_id,
                         "ID Connection": connection.id_connection,
-                        "Name Connection": connection.ds_name_connection,
+                        "nameConnection": connection.ds_name_connection,
                         "User": connection.ds_user,
                         "IP": connection.ds_connection,
                         "Password": connection.ds_password,
@@ -96,32 +94,20 @@ class DataMigration:
             ds_database_origin1 = connection_info_origin1["Database"]
             ds_charset_origin1 = "utf8"
             ds_connector_origin1 = connection_info_origin1["Connector"]
-
+            ds_name_connection1   =  connection_info_origin1["nameConnection"]
+             
             ds_user_origin2 = connection_info_origin2["User"]
             ds_connection_origin2 = connection_info_origin2["IP"]
             ds_password_origin2 = connection_info_origin2["Password"]
             ds_database_origin2 = connection_info_origin2["Database"]
             ds_charset_origin2 = "utf8"
             ds_connector_origin2 = connection_info_origin2["Connector"]
-
-            if ds_connector_origin1 == "mysql":
-                ds_conexao_origin1 = f"mysql://{ds_user_origin1}:{ds_password_origin1}@{ds_connection_origin1}/{ds_database_origin1}?charset={ds_charset_origin1}"
-            elif ds_connector_origin1 == "postgresql":
-                ds_conexao_origin1 = f"postgresql://{ds_user_origin1}:{ds_password_origin1}@{ds_connection_origin1}/{ds_database_origin1}"
-            elif ds_connector_origin1 == "sqlite":
-                ds_conexao_origin1 = f"sqlite:///{ds_database_origin1}"
-            else:
-                raise ValueError("Tipo de conexão não suportado para a origin1")
-
-            if ds_connector_origin2 == "mysql":
-                ds_conexao_origin2 = f"mysql://{ds_user_origin2}:{ds_password_origin2}@{ds_connection_origin2}/{ds_database_origin2}?charset={ds_charset_origin2}"
-            elif ds_connector_origin2 == "postgresql":
-                ds_conexao_origin2 = f"postgresql://{ds_user_origin2}:{ds_password_origin2}@{ds_connection_origin2}/{ds_database_origin2}"
-            elif ds_connector_origin2 == "sqlite":
-                ds_conexao_origin2 = f"sqlite:///{ds_database_origin2}"
-            else:
-                raise ValueError("Tipo de conexão não suportado para a origin2")
-
+            ds_name_connection2 = connection_info_origin2["nameConnection"]
+             
+            if ds_connector_origin1 and ds_connector_origin2 is not None:
+                ds_conexao_origin1 = f"{ds_connector_origin1}://{ds_user_origin1}:{ds_password_origin1}@{ds_connection_origin1}/{ds_database_origin1}?charset={ds_charset_origin1}"
+                ds_conexao_origin2 = f"{ds_connector_origin2}://{ds_user_origin2}:{ds_password_origin2}@{ds_connection_origin2}/{ds_database_origin2}?charset={ds_charset_origin2}"
+        
             conexao_origin1 = ConexaoBancoDados(ds_conexao_origin1)
             conexao_origin2 = ConexaoBancoDados(ds_conexao_origin2)
 
@@ -132,6 +118,7 @@ class DataMigration:
 
             if query_list:
                 logger = Logger()  # Instancia a classe Logger
+                logger.log_entry(project_id, "Início da ETL")
                 for query_obj in query_list:
                     origin_query = query_obj.origin_query
                     query_destination = query_obj.query_destination
@@ -148,43 +135,44 @@ class DataMigration:
                             with conexao_origin2.engine.connect() as connection:
                                 metadata = sqlalchemy.MetaData()
                                 metadata.reflect(bind=conexao_origin2.engine)
-                                table = metadata.tables[query_destination]
+                                try:
+                                    table = metadata.tables[query_destination]
+                                except KeyError:
+                                    raise ValueError(f"Tabela de destino '{query_destination}' não encontrada.")
 
                                 if id_type_query == 2:
-                                    # Truncar (limpar) a tabela de destino
                                     truncate_stmt = sqlalchemy.sql.text(f"TRUNCATE TABLE {query_destination}")
                                     connection.execute(truncate_stmt)
 
-                                # Inserir os resultados na tabela de destino
                                 insert_stmt = insert(table).values([result._asdict() for result in origin_results])
                                 connection.execute(insert_stmt)
                                 connection.commit()
-                            print("Inserção concluída com sucesso.")
 
                             logger.log_entry(project_id, "Consulta concluída com sucesso")  # Inserir log de conclusão
-
                         except SQLAlchemyError as e:
-                            print(f"Erro ao executar a inserção: {str(e)}")
                             logger.log_entry(project_id, f"Erro ao executar a inserção: {str(e)}", error=True)
+                            logger.log_entry(project_id, "Consulta finalizada como erro")
+                            
+                        except ValueError as e:
+                            logger.log_entry(project_id, f"{str(e)}", error=True)
+                            logger.log_entry(project_id, "Consulta concluída como erro")
                     else:
-                        print("Nenhum resultado retornado pela consulta de origem.")
                         logger.log_entry(project_id, "Nenhum resultado retornado pela consulta de origem.", error=True)
-                    time.sleep(2)
+                        logger.log_entry(project_id, "Concluída consulta")
+                        
+                logger.log_entry(project_id, "Finalizando ETL")
                 ProjectUpdater.update_last_run(project_id)
             else:
-                print("Nenhuma consulta encontrada para o projeto.")
                 logger.log_entry(project_id, "Nenhuma consulta encontrada para o projeto.", error=True)
-
-        else:
-            print("Nenhuma conexão encontrada.")
-
+        
     def run(self):
-        while True:
-            current_time = '22:53:00'
-            if current_time != '22:53:00':
-                break 
-            self.migrate_data()
-            time.sleep(3600)
+         while True:
+            current_time = datetime.now().time()
+            current_time_str = current_time.strftime("%H:%M:%S")  
+            times = Time.objects(time=current_time_str)
+            if times:
+                self.migrate_data()
+            time.sleep(0.9)
 
 
 data_migration = DataMigration()

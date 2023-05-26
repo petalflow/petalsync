@@ -5,6 +5,8 @@
 
 O criador está trabalhando na projeção de uma interface que permita gerenciar e agendar as transações de dados entre servidores, assim como acompanhar os logs de execução. Esse arcabouço será a segunda parte do projeto que se conecta a API já desenvolvida.
 
+<iframe width="560" height="315" src="https://www.youtube.com/watch?v=y3wszkN3T6s&t=12s&ab_channel=ClaytonSilva" frameborder="0" allowfullscreen></iframe>
+
 A aplicação é constituída de três ferramentas:
 
 - API: Permite acesso externo, sendo a base de consumo das demais ferramentas do projeto. E permite que outras aplicações possam consumir rotas externas.

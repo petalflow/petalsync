@@ -49,6 +49,10 @@ class Logger:
         )
         log.save()
 
+# Automação de script python
+class ScritpExecPy:
+    pass
+
 class DataMigration:
     def __init__(self):
         self.metadata = sqlalchemy.MetaData()
@@ -62,27 +66,31 @@ class DataMigration:
 
         for time_obj in times:
             project = Project.objects(id_project=time_obj.id_project, fl_active=1,
-                                  connection_origin1__ne=0, connection_origin2__ne=0).first()
-            if project:
-                project_id = project.id_project
-                connection_origin1 = project.connection_origin1
-                connection_origin2 = project.connection_origin2
+                                 connection_origin1__ne=0, connection_origin2__ne=0).first()
+            
+            if NotImplemented:
+                pass #implementando a verificação do tipo de projeto
+            else:
+                if project:
+                    project_id = project.id_project
+                    connection_origin1 = project.connection_origin1
+                    connection_origin2 = project.connection_origin2
 
-                connections = ConnectionDestination.objects(id_connection__in=[connection_origin1, connection_origin2])
-                
-                for connection in connections:
-                    connection_info = {
-                        "ID Project": project_id,
-                        "ID Connection": connection.id_connection,
-                        "nameConnection": connection.ds_name_connection,
-                        "User": connection.ds_user,
-                        "IP": connection.ds_connection,
-                        "Password": connection.ds_password,
-                        "Port": connection.ds_port,
-                        "Database": connection.ds_database,
-                        "Connector": connection.ds_connector
-                    }
-                    connections_list.append(connection_info)
+                    connections = ConnectionDestination.objects(id_connection__in=[connection_origin1, connection_origin2])
+                    
+                    for connection in connections:
+                        connection_info = {
+                            "ID Project": project_id,
+                            "ID Connection": connection.id_connection,
+                            "nameConnection": connection.ds_name_connection,
+                            "User": connection.ds_user,
+                            "IP": connection.ds_connection,
+                            "Password": connection.ds_password,
+                            "Port": connection.ds_port,
+                            "Database": connection.ds_database,
+                            "Connector": connection.ds_connector
+                        }
+                        connections_list.append(connection_info)
 
         if connections_list:
             connection_info_origin1 = connections_list[0] 

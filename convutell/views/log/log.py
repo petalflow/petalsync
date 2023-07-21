@@ -1,7 +1,8 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
+from datetime import datetime
 from config.dbConfig import db, router
-from model.db import Log
+from model.db import Log, Query
 from schemas.schemas import LogModel, LogSaveModel
 
 
@@ -92,3 +93,35 @@ def delete_log(id_log: int):
         )
     else:
         raise HTTPException(status_code=404, detail="Log not found")
+    
+
+"""
+@router.get("/GetFilteredLogs", response_model=List[LogModel], tags=['Log'])
+def get_filtered_logs(
+    project_name: str = Query(None, alias="project_name"),
+    start_date: str = Query(None, alias="start_date"),
+    end_date: str = Query(None, alias="end_date"),
+    fl_error: bool = Query(None, alias="fl_error")
+):
+    logs = Log.objects()
+    
+    if project_name:
+        logs = logs.filter(id_project__name_project__icontains=project_name)
+    if start_date:
+        logs = logs.filter(dt_execution__gte=start_date)
+    if end_date:
+        logs = logs.filter(dt_execution__lte=end_date)
+    if fl_error is not None:
+        logs = logs.filter(fl_error=fl_error)
+
+    log_list = []
+    for log in logs:
+        log_data = LogModel(
+            id_log=log.id_log,
+            id_project=log.id_project,
+            dt_execution=log.dt_execution,
+            ds_log=log.ds_log,
+            fl_error=log.fl_error
+        )
+        log_list.append(log_data)
+    return log_list"""

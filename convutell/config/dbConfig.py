@@ -13,7 +13,4 @@ connection_string_db  = os.getenv("MONGODB_CONNECTION_STRING_DB")
 # Registrar a conexão com o MongoDB
 db = connect(connection_string_db, host=connection_string)
 
-templates = Jinja2Templates(directory="templates")
-
-
 router = APIRouter()

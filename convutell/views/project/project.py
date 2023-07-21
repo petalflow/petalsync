@@ -1,5 +1,6 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
+from datetime import datetime
 from config.dbConfig import db, router
 from model.db import Project
 from schemas.schemas import ProjectModel, ProjectSaveModel
@@ -44,7 +45,7 @@ def get_project(id_project: int):
 def create_project(project: ProjectSaveModel):
     new_project = Project(
         name_project=project.name_project,
-        dt_last_run=project.dt_last_run,
+        dt_last_run=datetime.combine(project.dt_last_run, datetime.min.time()).isoformat(),
         fl_active=project.fl_active,
         connection_origin1=project.connection_origin1,
         connection_origin2=project.connection_origin2

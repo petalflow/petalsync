@@ -1,4 +1,6 @@
 import streamlit as st
+import io
+import contextlib
 import pandas as pd
 import requests
 from streamlit_option_menu import option_menu
@@ -10,7 +12,7 @@ from streamlit_extras.stoggle import stoggle
 st.set_page_config(layout="centered")
 
 # URL base da API
-base_url = "http://localhost:8000"
+base_url = "http://localhost:8000"  
 
 # Função para estilizar o card dos projetos
 def style_project_card():
@@ -114,7 +116,7 @@ if selected2  == "Projetos":
                 st.write(f'<div class="project-card">'
                         f'<strong>Nome: </strong> {project["name_project"]} <br>'
                         f'<strong>Data da Última Execução: </strong> {project["dt_last_run"]} <br>'
-                        f'<strong>Ativo:</strong> {project["fl_active"]} <br>'
+                        f'<strong>Ativo:</strong> {project["fl_acti # Preencha a ordem de execução corretamenteve"]} <br>'
                         f'<strong>Conexão de Origem:</strong> {project["connection_origin1"]} <br>'
                         f'<strong>Conexão de Destino:</strong> {project["connection_origin2"]}</div>', unsafe_allow_html=True)
 
@@ -216,9 +218,6 @@ if selected2 == "Logs":
         st.table(pd.DataFrame(table_data))
     else:
         st.write("Nenhum log encontrado.")
-
-
-# Página "Script" 
 
 # Página de Conexão
 def create_connection():
@@ -327,4 +326,62 @@ if selected2 == "Conexões":
 
     
 
+
+# Script
+if selected2 == "Scripts":
+    st.markdown(
+        """
+        <style>
+        .stTextarea textarea {
+            background-color: #000000;
+            color: #ffffff;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    language_selection = st.selectbox("Selecione a Linguagem", ["Python", "SQL"])
+
+    if language_selection == "Python":
+        script_code = st.text_area("Código Python", height=200)
+        language = "python"
+    else:
+        script_code = st.text_area("Código SQL", height=200)
+        language = "sql"
     
+    if st.button("Executar Código"):
+        output_buffer = io.StringIO()
+        with contextlib.redirect_stdout(output_buffer):
+            try:
+                if language == "python":
+                    exec(script_code)
+                else:
+                    st.error("A execução de SQL não está implementada atualmente.")
+            except Exception as e:
+                st.error(f"Ocorreu um erro na execução do código: {str(e)}")
+        
+        output_result = output_buffer.getvalue()
+
+        if output_result:
+            st.write("Saída:")
+            st.code(output_result)
+        else:
+            st.write("Nenhuma saída gerada.")
+
+    if st.button("Salvar Código"):
+        if language == "python":
+            query = {
+                "id_project": 10,  
+                "origin_query": script_code,
+                "query_destination": "",
+                "id_type_query": 1,  
+                "nr_execution_order": 1, 
+            }
+            response = requests.post(f"{base_url}/CreateQueries", json=query)
+            if response.status_code == 200:
+                st.write("Código Python salvo com sucesso.")
+            else:
+                st.write("Erro ao salvar o código Python.")
+        else:
+            st.error("Ainda não implementado.")

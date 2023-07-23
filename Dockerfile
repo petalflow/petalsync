@@ -25,7 +25,7 @@ RUN /opt/venv/bin/python -m pip install uvicorn
 
 
 
-EXPOSE 8000 9001
+EXPOSE 8000 8501
 
 #CMD ["/opt/venv/bin/uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
 

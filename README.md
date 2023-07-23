@@ -114,7 +114,7 @@ O código apresentado configura um processo chamado "etl" usando o Supervisor. E
 
 ### Interface Web
 
-![interface](assets/interface.png)
+![interface](https://github.com/convutell/autconvutell/blob/main/convutell/assets/interface.png)
 
 Algumas funcionalidades em desenvolvimento.
 

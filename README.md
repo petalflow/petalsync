@@ -88,6 +88,14 @@ Use o comando abaixo para inicar o seu container.
 docker run -d -p 8000:8000 nome_do_projeto:latest
 ```
 
+Executei no seu navegador a interface de gerenciamento da aplicação. 
+
+```bash
+172.17.0.2:8501/
+```
+
+Verifique o endereço local do seu container docker e confirme o uso na porta 8501.
+
 Optamos por utilizar o Supervisor para monitoramento e controle dos nossos processos. Tanto a API como Processo de ETL será monitorados pelo Supervisor. Toda a configuração será passada para o controle do Supervidor através do arquivo `supervisord.conf`.
 
 ```bash
@@ -105,6 +113,9 @@ stdout_logfile_maxbytes=10MB
 O código apresentado configura um processo chamado "etl" usando o Supervisor. Esse processo é executado por um comando específico, que é a execução de um arquivo Python chamado "etl.py" dentro de um ambiente virtual. O diretório de trabalho para esse processo é definido com o mesmo nome do diretório da nossa aplicação "/convutell". O processo é configurado para iniciar automaticamente e reiniciar em caso de falha, com um máximo de três tentativas de inicialização. Os erros de saída são redirecionados para o arquivo de log "etl.log", localizado na pasta de logs "/convutell/logs/etl", e o tamanho máximo desse arquivo de log é limitado a 10MB. Essa configuração garante que o processo "etl" seja gerenciado pelo Supervisor, registrando sua saída e reiniciando-o automaticamente se necessário.
 
 ### Interface Web
+
+
+<img src='assets/interface.png>
 
 Algumas funcionalidades em desenvolvimento.
 

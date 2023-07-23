@@ -6,7 +6,7 @@
 O criador está trabalhando na projeção de uma interface que permita gerenciar e agendar as transações de dados entre servidores, assim como acompanhar os logs de execução. Esse arcabouço será a segunda parte do projeto que se conecta a API já desenvolvida.
 
 
-[![Demonstração](assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s%26t%3D12s%26ab_channel%3DClaytonSilva)
+[![Demonstração](assets/capa.png)](https://github.com/convutell/autconvutell/blob/main/convutell/assets/capa.png)
 
 
 

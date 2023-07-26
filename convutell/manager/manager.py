@@ -1,8 +1,10 @@
 import streamlit as st
 import io
 import contextlib
+from datetime import datetime
 import pandas as pd
 import requests
+from streamlit_modal import Modal
 from streamlit_option_menu import option_menu
 from streamlit_extras.dataframe_explorer import dataframe_explorer
 from streamlit_extras.stoggle import stoggle
@@ -66,78 +68,113 @@ selected2 = option_menu(None, ["Projetos", "Logs", "Conexões", 'Scripts'],
 selected2
 
 # Página "Home" - Lista todos os projetos
-if selected2  == "Projetos":
-    style_project_card()  
+def get_connections():
+    try:
+        response = requests.get(f"{base_url}/connections")
 
-    if st.button("Criar Novo Projeto", key="create_new_project_button"):
-        
-        st.write("")
-
-        form_container = st.empty()
-
-        name_project = st.text_input("Nome do Projeto:")
-        dt_last_run = st.date_input("Data da Última Execução:")
-        fl_active = st.checkbox("Ativo", value=True)
-        connection_origin1 = st.text_input("Conexão de Origem 1:")
-        connection_origin2 = st.text_input("Conexão de Origem 2:")
-
-        buttons_container = st.empty()
-
-        if buttons_container.button("Salvar"):
-            new_project = {
-                "name_project": name_project,
-                "dt_last_run": dt_last_run.isoformat(),
-                "fl_active": fl_active,
-                "connection_origin1": connection_origin1,
-                "connection_origin2": connection_origin2,
-            }
-            response = requests.post(f"{base_url}/CreateProjects", json=new_project)
-            if response.status_code == 200:
-                st.write("Projeto criado com sucesso.")
-            else:
-                st.write("Erro ao criar o projeto.")
-
-            name_project = ""
-            dt_last_run = None
-            fl_active = True
-            connection_origin1 = ""
-            connection_origin2 = ""
-
-        if buttons_container.button("Cancelar"):
-            
-            form_container.empty()
-
+        # Verifica se a resposta foi bem sucedida (status_code 200)
+        if response.status_code == 200:
+            connections_data = response.json()
+            return connections_data
+        else:
+            st.error("Erro ao obter as conexões.")
+            return []
+    except Exception as e:
+        st.error(f"Ocorreu um erro ao obter as conexões: {str(e)}")
+        return []
     
+
+if selected2 == "Projetos":
+    style_project_card()
+    
+    def main():
+        st.title("Exemplo de Modal com Streamlit")
+
+    modal = Modal("Criar Projetos", key="my_modal")
+    open_modal = st.button("Criar Projeto")
+    if open_modal:
+        modal.open()
+
+    if modal.is_open():
+        # Início do conteúdo do modal
+        with modal.container():
+            st.write("")
+
+            connections_data = get_connections()
+
+            connection_names = [""] + [connection["ds_name_connection"] for connection in connections_data]
+            
+            selected_connection1 = st.selectbox("Conexão de Origem:", connection_names)
+            selected_connection2 = st.selectbox("Conexão de Destino:", connection_names)
+
+            name_project = st.text_input("Nome do Projeto:")
+            dt_last_run = st.date_input("Data da Última Execução:")
+            fl_active = st.checkbox("Ativo", value=True)
+
+            save_button = st.button("Salvar")
+            cancel_button = st.button("Cancelar")
+            
+            if save_button:
+                id_connection1 = None
+                if selected_connection1:
+                    id_connection1 = next((connection["id_connection"] for connection in connections_data if connection["ds_name_connection"] == selected_connection1), None)
+
+                id_connection2 = None
+                if selected_connection2:
+                    id_connection2 = next((connection["id_connection"] for connection in connections_data if connection["ds_name_connection"] == selected_connection2), None)
+                
+                if id_connection1 is None or id_connection2 is None:
+                    st.error("Por favor, selecione conexões válidas.")
+                else:
+                    new_project = {
+                        "name_project": name_project,
+                        "dt_last_run": datetime.combine(dt_last_run, datetime.min.time()).isoformat(),
+                        "fl_active": fl_active,
+                        "connection_origin1": id_connection1,  # Salvar o ID da conexão em vez do nome
+                        "connection_origin2": id_connection2,  # Salvar o ID da conexão em vez do nome
+                    }
+                    try:
+                        response = requests.post(f"{base_url}/CreateProjects", json=new_project)
+
+                        if response.status_code == 200:
+                            st.write("Projeto criado com sucesso.")
+                            modal.close()
+                        else:
+                            st.error("Erro ao criar o projeto.")
+                    except Exception as e:
+                        st.error(f"Ocorreu um erro ao criar o projeto: {str(e)}")
+            elif cancel_button:
+                modal.close()
     # Lista todos os projetos
     projects = get_all_projects()
     if projects:
-        for project in projects:
-            with st.container():
-                st.write(f'<div class="project-card">'
-                        f'<strong>Nome: </strong> {project["name_project"]} <br>'
-                        f'<strong>Data da Última Execução: </strong> {project["dt_last_run"]} <br>'
-                        f'<strong>Ativo:</strong> {project["fl_acti # Preencha a ordem de execução corretamenteve"]} <br>'
-                        f'<strong>Conexão de Origem:</strong> {project["connection_origin1"]} <br>'
-                        f'<strong>Conexão de Destino:</strong> {project["connection_origin2"]}</div>', unsafe_allow_html=True)
+            for project in projects:
+                with st.container():
+                    st.write(f'<div class="project-card">'
+                            f'<strong>Nome: </strong> {project["name_project"]} <br>'
+                            f'<strong>Data da Última Execução: </strong> {project["dt_last_run"]} <br>'
+                            f'<strong>Ativo:</strong> {project["fl_active"]} <br>'
+                            f'<strong>Conexão de Origem:</strong> {project["connection_origin1"]} <br>'
+                            f'<strong>Conexão de Destino:</strong> {project["connection_origin2"]}</div>', unsafe_allow_html=True)
 
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    edit_button = st.button("Editar Projeto", key=f"edit_button_{project['id_project']}")
-                    if edit_button:
-                        st.write("Você pressionou o botão de editar.")
-                
-                with col2:
-                    st.write("")
+                    col1, col2, col3 = st.columns(3)
+                    with col1:
+                        edit_button = st.button("Editar Projeto", key=f"edit_button_{project['id_project']}")
+                        if edit_button:
+                            st.write("Você pressionou o botão de editar.")
+                    
+                    with col2:
+                        st.write("")
 
-                with col3:
-                    delete_button = st.button("Excluir Projeto", key=f"delete_button_{project['id_project']}")
-                    if delete_button:
-                        response = requests.delete(f"{base_url}/DeleteProjects/{project['id_project']}")
-                        if response.status_code == 200:
-                            st.write(f"Projeto ID {project['id_project']} excluído com sucesso.")
-                        else:
-                            st.write(f"Erro ao excluir o projeto ID {project['id_project']}.")
-                st.write('</div>', unsafe_allow_html=True)  
+                    with col3:
+                        delete_button = st.button("Excluir Projeto", key=f"delete_button_{project['id_project']}")
+                        if delete_button:
+                            response = requests.delete(f"{base_url}/DeleteProjects/{project['id_project']}")
+                            if response.status_code == 200:
+                                st.write(f"Projeto ID {project['id_project']} excluído com sucesso.")
+                            else:
+                                st.write(f"Erro ao excluir o projeto ID {project['id_project']}.")
+                    st.write('</div>', unsafe_allow_html=True)  
     else:
         st.write("Nenhum projeto encontrado.")
 

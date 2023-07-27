@@ -5,14 +5,7 @@
 
 O criador está trabalhando na projeção de uma interface que permita gerenciar e agendar as transações de dados entre servidores, assim como acompanhar os logs de execução. Esse arcabouço será a segunda parte do projeto que se conecta a API já desenvolvida.
 
-
-<<<<<<< HEAD
-[![Demonstração](assets/capa.png)](https://github.com/convutell/autconvutell/blob/main/convutell/assets/capa.png)
-=======
 ![Demonstração](https://github.com/convutell/autconvutell/blob/main/convutell/assets/capa.png)
->>>>>>> refs/remotes/origin/main
-
-
 
 A aplicação é constituída de três ferramentas:
 

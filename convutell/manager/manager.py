@@ -22,14 +22,11 @@ def style_project_card():
         """
         <style>
         .project-card {
-            background-color: #ffff;
             border-radius: 10px;
             padding: 27px;
             margin: 10px 0;
             height:180px;
             border-radius: 7px;
-            box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-
         }
         </style>
         """,
@@ -72,7 +69,6 @@ def get_connections():
     try:
         response = requests.get(f"{base_url}/connections")
 
-        # Verifica se a resposta foi bem sucedida (status_code 200)
         if response.status_code == 200:
             connections_data = response.json()
             return connections_data
@@ -130,8 +126,8 @@ if selected2 == "Projetos":
                         "name_project": name_project,
                         "dt_last_run": datetime.combine(dt_last_run, datetime.min.time()).isoformat(),
                         "fl_active": fl_active,
-                        "connection_origin1": id_connection1,  # Salvar o ID da conexão em vez do nome
-                        "connection_origin2": id_connection2,  # Salvar o ID da conexão em vez do nome
+                        "connection_origin1": id_connection1, 
+                        "connection_origin2": id_connection2,  
                     }
                     try:
                         response = requests.post(f"{base_url}/CreateProjects", json=new_project)
@@ -145,39 +141,51 @@ if selected2 == "Projetos":
                         st.error(f"Ocorreu um erro ao criar o projeto: {str(e)}")
             elif cancel_button:
                 modal.close()
+
+
     # Lista todos os projetos
+    def get_connection_name(connection_id):
+        try:
+            response = requests.get(f"{base_url}/connections/{connection_id}")
+            if response.status_code == 200:
+                connection_data = response.json()
+                return connection_data["ds_name_connection"]
+            else:
+                return f"Conexão não encontrada para o ID {connection_id}"
+        except Exception as e:
+            return f"Erro ao buscar conexão: {str(e)}"
+        
     projects = get_all_projects()
     if projects:
-            for project in projects:
-                with st.container():
-                    st.write(f'<div class="project-card">'
-                            f'<strong>Nome: </strong> {project["name_project"]} <br>'
-                            f'<strong>Data da Última Execução: </strong> {project["dt_last_run"]} <br>'
-                            f'<strong>Ativo:</strong> {project["fl_active"]} <br>'
-                            f'<strong>Conexão de Origem:</strong> {project["connection_origin1"]} <br>'
-                            f'<strong>Conexão de Destino:</strong> {project["connection_origin2"]}</div>', unsafe_allow_html=True)
-
-                    col1, col2, col3 = st.columns(3)
-                    with col1:
-                        edit_button = st.button("Editar Projeto", key=f"edit_button_{project['id_project']}")
-                        if edit_button:
-                            st.write("Você pressionou o botão de editar.")
+        for project in projects:
+            with st.container():
+                st.write('<hr style="border: 1px solid #dddddd47; margin: 2px 0;">', unsafe_allow_html=True)
+                st.write(f'<div class="project-card">'
+                        f'<strong>Nome: </strong> {project["name_project"]} <br>'
+                        f'<strong>Data da Última Execução: </strong> {project["dt_last_run"]} <br>'
+                        f'<strong>Ativo:</strong> {"Sim" if project["fl_active"] == 1 else "Não"} <br>'
+                        f'<strong>Conexão de Origem:</strong> {get_connection_name(project["connection_origin1"])} <br>'
+                        f'<strong>Conexão de Destino:</strong> {get_connection_name(project["connection_origin2"])} </div>', unsafe_allow_html=True)
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:                      
+                    st.write("")
                     
-                    with col2:
-                        st.write("")
+                with col2:
+                    st.write("")
 
-                    with col3:
-                        delete_button = st.button("Excluir Projeto", key=f"delete_button_{project['id_project']}")
-                        if delete_button:
-                            response = requests.delete(f"{base_url}/DeleteProjects/{project['id_project']}")
-                            if response.status_code == 200:
-                                st.write(f"Projeto ID {project['id_project']} excluído com sucesso.")
-                            else:
-                                st.write(f"Erro ao excluir o projeto ID {project['id_project']}.")
-                    st.write('</div>', unsafe_allow_html=True)  
+                with col3:
+                    delete_button = st.button("Excluir Projeto", key=f"delete_button_{project['id_project']}")
+                    if delete_button:
+                        response = requests.delete(f"{base_url}/DeleteProjects/{project['id_project']}")
+                        if response.status_code == 200:
+                            st.write(f"Projeto ID {project['id_project']} excluído com sucesso.")
+                        else:
+                            st.write(f"Erro ao excluir o projeto ID {project['id_project']}.")
+                st.write('<hr style="border: 0.5px solid #dddddd47; margin: 10px 0;">', unsafe_allow_html=True)
+
     else:
         st.write("Nenhum projeto encontrado.")
-
 
 # Página "Log" 
 def get_all_logs():

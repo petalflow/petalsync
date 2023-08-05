@@ -2,9 +2,9 @@
 from fastapi import Depends, Header, HTTPException
 from typing import Dict
 from typing import List
-from config.dbConfig import router
-from model.db import Time
-from schemas.schemas import TimeModel, TimeSaveModel
+from api.config.dbConfig import router
+from api.model.db import Time
+from api.schemas.schemas import TimeModel, TimeSaveModel
 from datetime import datetime, time
 
 

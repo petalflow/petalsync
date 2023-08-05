@@ -1,8 +1,8 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
-from config.dbConfig import router
-from model.db import TypeQuery
-from schemas.schemas import TypeQueryModel
+from api.config.dbConfig import router
+from api.model.db import TypeQuery
+from api.schemas.schemas import TypeQueryModel
 
 @router.get("/typeQueries", response_model=List[TypeQueryModel], tags=['Type_Queries'])
 async def get_TypeQueries():

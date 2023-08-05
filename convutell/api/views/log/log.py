@@ -1,9 +1,9 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from datetime import datetime
-from config.dbConfig import db, router
-from model.db import Log, Query
-from schemas.schemas import LogModel, LogSaveModel
+from api.config.dbConfig import db, router
+from api.model.db import Log, Query
+from api.schemas.schemas import LogModel, LogSaveModel
 
 
 @router.get("/GetlogId/{id_project}", response_model=LogModel, tags=['Log'])

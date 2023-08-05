@@ -1,9 +1,9 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from datetime import datetime
-from config.dbConfig import db, router
-from model.db import Project
-from schemas.schemas import ProjectModel, ProjectSaveModel
+from api.config.dbConfig import db, router
+from api.model.db import Project
+from api.schemas.schemas import ProjectModel, ProjectSaveModel
 
 
 @router.get("/GetAllProjects", response_model=List[ProjectModel], tags=['Project'])

@@ -10,7 +10,7 @@ from streamlit_extras.dataframe_explorer import dataframe_explorer
 from streamlit_extras.stoggle import stoggle
 
 
-
+    
 st.set_page_config(layout="centered")
 
 # URL base da API
@@ -276,20 +276,25 @@ def create_connection():
     ds_connector = st.text_input("Conector:")
 
     if st.button("Salvar"):
-        new_connection = {
-            "ds_name_connection": ds_name_connection,
-            "ds_user": ds_user,
-            "ds_connection": ds_connection,
-            "ds_password": ds_password,
-            "ds_port": ds_port,
-            "ds_database": ds_database,
-            "ds_connector": ds_connector,
-        }
-        response = requests.post(f"{base_url}/connections", json=new_connection)
-        if response.status_code == 200:
-            st.write("Conexão criada com sucesso.")
+        if ds_name_connection and ds_connection:
+            new_connection = {
+                "ds_name_connection": ds_name_connection,
+                "ds_user": ds_user,
+                "ds_connection": ds_connection,
+                "ds_password": ds_password,
+                "ds_port": ds_port,
+                "ds_database": ds_database,
+                "ds_connector": ds_connector,
+            }
+            response = requests.post(f"{base_url}/connections", json=new_connection)
+            if response.status_code == 200:
+                st.write("Conexão criada com sucesso.")
+                st.experimental_rerun()  # Rerun the app to close the modal
+            else:
+                st.write("Erro ao criar a conexão.")
         else:
-            st.write("Erro ao criar a conexão.")
+            st.write("Por favor, preencha pelo menos o Nome da Conexão e Connection String.")
+
 
 def edit_connection(connection):
     st.write(f"Editar Conexão ID: {connection['id_connection']}")

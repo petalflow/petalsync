@@ -10,7 +10,7 @@ load_dotenv()
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+#app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 origins = [    "http://localhost:8501",    "http://127.0.0.1:8000",]
@@ -23,12 +23,12 @@ app.add_middleware(
 )
 
 
-from views.project import project
-from views.connection import connection
-from views.query import query
-from views.log import log
-from views.time import time 
-from views.ds_type_query import _type
+from api.views.project import project
+from api.views.connection import connection
+from api.views.query import query
+from api.views.log import log
+from api.views.time import time 
+from api.views.ds_type_query import _type
 
 app.include_router(project.router)
 app.include_router(connection.router)

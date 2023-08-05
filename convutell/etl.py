@@ -6,8 +6,9 @@ from datetime import datetime
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import insert
-from model.db import ConnectionDestination, Project, Time, Query, Log
+from api.model.db import ConnectionDestination, Project, Time, Query, Log
 from mysql.connector import connect
+
 
 
 class ConexaoBancoDados:

@@ -89,7 +89,7 @@ Use o comando abaixo para inicar o seu container.
 docker run -d -p 8000:8000 nome_do_projeto:latest
 ```
 
-Executei no seu navegador a interface de gerenciamento da aplicação. 
+Execute no seu navegador a interface de gerenciamento da aplicação. 
 
 ```bash
 172.17.0.2:8501/

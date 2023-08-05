@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi import Depends, Header, HTTPException
 from typing import List
-from config.dbConfig import db, router
-from model.db import ConnectionDestination
-from schemas.schemas import ConnectionDestinationModel, ConnectionDestinationSaveModel
+from api.config.dbConfig import db, router
+from api.model.db import ConnectionDestination
+from api.schemas.schemas import ConnectionDestinationModel, ConnectionDestinationSaveModel
 
 
 router = APIRouter()

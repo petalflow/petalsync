@@ -1,9 +1,9 @@
 from fastapi import Depends, Header, HTTPException
 from typing import Dict
 from typing import List
-from config.dbConfig import router
-from model.db import Query
-from schemas.schemas import QuerySaveModel, QueryModel
+from api.config.dbConfig import router
+from api.model.db import Query
+from api.schemas.schemas import QuerySaveModel, QueryModel
 
 
 @router.post("/CreateQueries", response_model=QuerySaveModel, tags=['Query'])

@@ -7,7 +7,7 @@ O criador está trabalhando na projeção de uma interface que permita gerenciar
 
 
 
-[![Demonstração](https://github.com/convutell/autconvutell/blob/main/convutell/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
+[![Demonstração](https://github.com/convutell/autconvutell/blob/main/convutell/api/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
 
 
 
@@ -78,15 +78,16 @@ uvicorn app:app --reload
 ```
 ### Instalando no Docker
 
-Configure o arquivo `Dockerfile` para adequar a configuração ideal do seu ambiente. Esta implementação do projeto para a imagem docker está em desevolvimento, portanto cabe avaliar a viabilidade das configuração dispostas. 
+
+Configure os arquivo `Dockerfile` e `docker-compose.yml` para adequar a configuração ideal do seu ambiente. Esta implementação do projeto para a imagem docker está em desevolvimento, portanto cabe avaliar a viabilidade das configuração dispostas. 
 
 ```bash
-docker build -t nome_do_projeto:latest .
+sudo docker-compose up -d
 ```
 Use o comando abaixo para inicar o seu container. 
 
 ```bash
-docker run -d -p 8000:8000 nome_do_projeto:latest
+sudo docker-compose down
 ```
 
 Execute no seu navegador a interface de gerenciamento da aplicação. 
@@ -115,7 +116,7 @@ O código apresentado configura um processo chamado "etl" usando o Supervisor. E
 
 ### Interface Web
 
-![interface](https://github.com/convutell/autconvutell/blob/main/convutell/assets/interface.png)
+![interface](https://github.com/convutell/autconvutell/blob/main/convutell/api/assets/interface.png)
 
 Algumas funcionalidades em desenvolvimento.
 

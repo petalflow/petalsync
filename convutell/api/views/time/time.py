@@ -31,7 +31,7 @@ def get_time(id_project: str):
 
 @router.post("/CreateTimes", response_model=TimeModel, tags=['Time'])
 def create_time(time: TimeSaveModel):
-    new_time = Time(
+    new_time = Time( 
         id_project=time.id_project,
         time=time.time
     )

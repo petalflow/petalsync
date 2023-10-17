@@ -6,23 +6,26 @@ from api.model.db import Log, Query
 from api.schemas.schemas import LogModel, LogSaveModel
 
 
-@router.get("/GetlogId/{id_project}", response_model=LogModel, tags=['Log'])
+@router.get("/GetlogId/{id_project}", response_model=List[LogModel], tags=['Log'])
 def get_log(id_project: int):
     try:
-        log = Log.objects(id_project=id_project).first()
-        if log:
-            log_data = LogModel(
+        logs = Log.objects(id_project=id_project).all()
+        log_data = []
+
+        for log in logs:
+            log_item = LogModel(
                 id_log=log.id_log,
                 id_project=log.id_project,
                 dt_execution=log.dt_execution,
                 ds_log=log.ds_log,
                 fl_error=log.fl_error
             )
-            return log_data
-        else:
-            raise HTTPException(status_code=404, detail="Log not found")
+            log_data.append(log_item)
+
+        return log_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 @router.get("/GetAlllog", response_model=List[LogModel], tags=['Log'])

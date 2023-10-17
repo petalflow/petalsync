@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 from datetime import datetime, date, time
 
-
+ 
 class ProjectModel(BaseModel):
     id_project: int
     name_project: str
@@ -14,6 +14,12 @@ class ProjectModel(BaseModel):
 class ProjectSaveModel(BaseModel):
     name_project: str
     dt_last_run: datetime
+    fl_active: int
+    connection_origin1: int
+    connection_origin2: int
+
+class ProjectEditModel(BaseModel):
+    name_project: str
     fl_active: int
     connection_origin1: int
     connection_origin2: int
@@ -81,6 +87,7 @@ class TimeModel(BaseModel):
 
     class Config:
         orm_mode = True
+        from_attributes = True
 
 
 class TimeSaveModel(BaseModel):
@@ -89,7 +96,8 @@ class TimeSaveModel(BaseModel):
 
     class Config:
         orm_mode = True
-
+        from_attributes = True
+     
 
 class TypeQueryModel(BaseModel):
     id_type_query: int

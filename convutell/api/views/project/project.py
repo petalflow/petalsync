@@ -3,9 +3,9 @@ from typing import List
 from datetime import datetime
 from api.config.dbConfig import db, router
 from api.model.db import Project
-from api.schemas.schemas import ProjectModel, ProjectSaveModel
+from api.schemas.schemas import ProjectModel, ProjectSaveModel, ProjectEditModel
 
-
+ 
 @router.get("/GetAllProjects", response_model=List[ProjectModel], tags=['Project'])
 def get_projects():
     projects = Project.objects().all()
@@ -54,13 +54,13 @@ def create_project(project: ProjectSaveModel):
     return project
 
 
-@router.put("/GetProjectsId/{id_project}", response_model=ProjectSaveModel, tags=['Project'])
-def update_project(id_project: int, project: ProjectSaveModel):
+@router.put("/GetProjectsId/{id_project}", response_model=ProjectEditModel, tags=['Project'])
+def update_project(id_project: int, project: ProjectEditModel):
     try:
         existing_project = Project.objects(id_project=id_project).first()
         if existing_project:
             existing_project.name_project = project.name_project
-            existing_project.dt_last_run = project.dt_last_run
+            #existing_project.dt_last_run = project.dt_last_run
             existing_project.fl_active = project.fl_active
             existing_project.connection_origin1 = project.connection_origin1
             existing_project.connection_origin2 = project.connection_origin2

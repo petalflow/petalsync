@@ -116,13 +116,52 @@ O código apresentado configura um processo chamado "etl" usando o Supervisor. E
 
 ### Interface Web
 
+A interface web é uma aplicação de gerenciamento de agendamento de scripts em SQL e Python. Essa ferramenta foi projetada para tornar o trabalho dos analistas mais eficiente, permitindo o agendamento de scripts e o acompanhamento organizado de tarefas. Além disso, ela auxilia na identificação de erros que possam ocorrer durante a execução desses scripts.
+
+Esta aplicação foi desenvolvida em Flask e é executada em conjunto com o servidor Nginx para garantir alto desempenho e escalabilidade. Para integrá-la ao seu projeto, siga estas etapas:
+
+
+Clonando o Repositório:
+
+Você pode obter o código-fonte do projeto clonando o repositório a partir do GitHub:
+
+
+```bash
+https://github.com/convutell/convutell-in.git
+```
+
+Executando a Aplicação:
+
+A aplicação pode ser executada em seu ambiente Python local, simplesmente executando o arquivo Python principal (arquivo.py).
+
+```bash
+python arquivo.py
+
+```
+No entanto, se você deseja aproveitar os benefícios do Docker, recomendamos o uso do Docker Compose para simplificar a configuração e execução da aplicação. Certifique-se de ter o Docker e o Docker Compose instalados em seu sistema.
+
+Para iniciar a aplicação com o Docker Compose, utilize o seguinte comando na raiz do projeto clonado:
+
+
+```bash
+docker-compose up --build
+
+```
+
+Isso irá construir e executar os contêineres necessários, garantindo que a aplicação seja executada em um ambiente isolado e pronto para uso.
+
+Após essas etapas, você poderá acessar a interface web por meio do navegador em `http://127.0.0.1:5000/projects/` e começar a usar a ferramenta para agendar e gerenciar seus scripts de forma eficaz.
+
 ![interface](https://github.com/convutell/autconvutell/blob/main/convutell/api/assets/interface.png)
 
-Algumas funcionalidades em desenvolvimento.
+Algumas funcionalidades da aplicaçção.
 
 - Gerenciamento de consultas.
 - Conexões internas e externas para diferentes projetos. 
 - Análise de Logs de transações
+
+Em desenvolvimento
+
 - Ambiente de execução Python
 - Notificações de falhas direto na aplicação
 - Compartilhamento de projetos

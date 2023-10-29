@@ -49,7 +49,7 @@ class ConnectionDestinationSaveModel(BaseModel):
     class Config:
         orm_mode = True
 
-
+ 
 class QueryModel(BaseModel):
     id_query: int
     id_project: int
@@ -64,7 +64,6 @@ class QuerySaveModel(BaseModel):
     query_destination: str
     id_type_query: int
     nr_execution_order: int
-
 
 class LogModel(BaseModel):
     id_log: int

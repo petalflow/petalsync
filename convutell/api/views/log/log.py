@@ -4,7 +4,7 @@ from datetime import datetime
 from api.config.dbConfig import db, router
 from api.model.db import Log, Query
 from api.schemas.schemas import LogModel, LogSaveModel
-
+ 
 
 @router.get("/GetlogId/{id_project}", response_model=List[LogModel], tags=['Log'])
 def get_log(id_project: int):

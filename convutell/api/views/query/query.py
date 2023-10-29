@@ -18,19 +18,19 @@ def create_query(query: QuerySaveModel):
     new_query.save()
     return query
 
-@router.get("/GetQueriesId/{id_query}", response_model=QueryModel, tags=['Query'])
+@router.get("/GetQueriesId/{id_query}", response_model=List[QueryModel], tags=['Query'])
 def get_query(id_query: int):
     try:
-        query = Query.objects(id_query=id_query).first()
-        if query:
-            query_data = QueryModel(
+        queries = Query.objects(id_query=id_query).all()
+        if queries:
+            query_data = [QueryModel(
                 id_query=query.id_query,
                 id_project=query.id_project,
                 origin_query=query.origin_query,
                 query_destination=query.query_destination,
                 id_type_query=query.id_type_query,
                 nr_execution_order=query.nr_execution_order
-            )
+            )for query in queries]
             return query_data
         else:
             return {"message": "No query found with this id_query"}
@@ -38,27 +38,28 @@ def get_query(id_query: int):
         return {"error": str(e)}
 
 
-@router.get("/GetqueriesIdprojects/{id_project}/", response_model=QueryModel, tags=['Query'])
-def get_query(id_project: int):
+@router.get("/GetqueriesIdprojects/{id_project}/", response_model=List[QueryModel], tags=['Query'])
+def get_queries(id_project: int):
     try:
-        query = Query.objects(id_project=id_project).first()
-        if query:
-            query_data = QueryModel(
+        queries = Query.objects(id_project=id_project).all()
+        if queries:
+            query_data = [QueryModel(
                 id_query=query.id_query,
                 id_project=query.id_project,
                 origin_query=query.origin_query,
                 query_destination=query.query_destination,
                 id_type_query=query.id_type_query,
                 nr_execution_order=query.nr_execution_order
-            )
+            ) for query in queries]
             return query_data
         else:
-            return {"message": "No query found with this id_project and id_query"}
+            return {"message": "No queries found with this id_project"}
     except Exception as e:
         return {"error": str(e)}
 
 
-@router.put("/UpdateQueries/{id_query}", response_model=QueryModel, tags=['Query'])
+ 
+@router.put("/UpdateQueries/{id_query}", response_model=QuerySaveModel, tags=['Query'])
 def update_query(id_query: int, query: QuerySaveModel):
     try:
         existing_query = Query.objects(id_query=id_query).first()

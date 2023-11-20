@@ -57,7 +57,6 @@ def get_queries(id_project: int):
     except Exception as e:
         return {"error": str(e)}
 
-
  
 @router.put("/UpdateQueries/{id_query}", response_model=QuerySaveModel, tags=['Query'])
 def update_query(id_query: int, query: QuerySaveModel):
@@ -84,3 +83,35 @@ def delete_query(id_query: int):
         return {"message": "Query deleted successfully"}
     else:
         raise HTTPException(status_code=404, detail="Query not found")
+
+@router.get("/ExecuteQuery/{id_query}", response_model=List[QueryModel], tags=['Query'])
+def execute_query(id_query: int):
+    try:
+        queries = Query.objects(id_query=id_query).all()
+        if queries:
+            query_data = [QueryModel(
+                id_query=query.id_query,
+                id_project=query.id_project,
+                origin_query=query.origin_query,
+                query_destination=query.query_destination,
+                id_type_query=query.id_type_query,
+                nr_execution_order=query.nr_execution_order
+            )for query in queries]
+
+            # Aqui você cria uma instância da sua classe independent_execution
+            executor = independent_execution()
+
+            # Itera sobre os objetos de consulta e executa a lógica desejada
+            for query in queries:
+                executor.execute_query_in(
+                    query_origin=query.origin_query,
+                    query_destination=query.query_destination,
+                    id_type_query=query.id_type_query,
+                    project_id=query.id_project
+                )
+
+            return query_data
+        else:
+            return {"message": "No query found with this id_query"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

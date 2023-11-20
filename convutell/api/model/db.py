@@ -29,6 +29,8 @@ class Project(Document):
     name_project = StringField(unique=True, required=True, max_length=100)
     dt_last_run = DateTimeField(required=True)
     fl_active = IntField(default=0, required=True, max_value=1)
+    in_execution = IntField(default=0, required=True, max_value=1)
+    type_project = IntField(default=0, required=True, max_value=1) 
     connection_origin1 = IntField(default=0, required=True, unique=False)
     connection_origin2 = IntField(default=0, required=True, unique=False)
 
@@ -40,6 +42,13 @@ class Query(Document):
     id_type_query = IntField(required=True)
     nr_execution_order = IntField(required=True, max_value=5)
 
+class Scripts(Document):
+    id_script = SequenceField(primary_key=True, required=True)
+    id_project = IntField(required=True)
+    script_name = StringField(required=True, max_length=50)
+    ds_script = StringField(max_length=20000)
+    nr_execution_order = IntField(required=True, max_value=5)
+    
 class Log(Document):
     id_log = SequenceField(primary_key=True, required=True)
     id_project = IntField(required=True)

@@ -8,6 +8,8 @@ class ProjectModel(BaseModel):
     name_project: str
     dt_last_run: datetime
     fl_active: int
+    in_execution: int
+    type_project: int
     connection_origin1: int
     connection_origin2: int
 
@@ -15,6 +17,7 @@ class ProjectSaveModel(BaseModel):
     name_project: str
     dt_last_run: datetime
     fl_active: int
+    type_project: int
     connection_origin1: int
     connection_origin2: int
 
@@ -64,6 +67,27 @@ class QuerySaveModel(BaseModel):
     query_destination: str
     id_type_query: int
     nr_execution_order: int
+
+class ScriptModel(BaseModel):
+    id_script: int
+    id_project: int 
+    script_name: str
+    ds_script: str
+    nr_execution_order: int
+
+class ScriptSaveModel(BaseModel):
+    id_project: int
+    script_name: str
+    ds_script: str
+    nr_execution_order: int
+
+class ScriptEditModel(BaseModel):
+    script_name: str
+    ds_script: str
+    nr_execution_order: int
+
+class ScriptModelExecute(BaseModel):
+    ds_script: str
 
 class LogModel(BaseModel):
     id_log: int

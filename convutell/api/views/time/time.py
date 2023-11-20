@@ -14,20 +14,23 @@ def get_times():
     return [TimeModel.from_orm(time) for time in times]
 
 @router.get("/GetTimesId/{id_project}", response_model=List[TimeModel], tags=['Time'])
-def get_time(id_project: str):
-    times = Time.objects(id_project=id_project).all()
-    if times:
+def get_time(id_project: int):
+    try:
         time_list = []
-        for time_obj in times:
-            time_dict = {
-                "id_time": time_obj.id_time,
-                "id_project": time_obj.id_project,
-                "time": time_obj.time,
-            }
-            time_list.append(time_dict)
-        return time_list
-    else:
-        raise HTTPException(status_code=404, detail="Time not found")
+        times = Time.objects(id_project=id_project).all()
+        if times:
+            for time_obj in times:
+                time_dict = {
+                    "id_time": time_obj.id_time,
+                    "id_project": time_obj.id_project,
+                    "time": time_obj.time,
+                }
+                time_list.append(time_dict)
+            return time_list
+        else:
+            return time_list
+    except Exception as e:
+        raise ValueError({str(e)})
 
 @router.post("/CreateTimes", response_model=TimeModel, tags=['Time'])
 def create_time(time: TimeSaveModel):

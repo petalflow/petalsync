@@ -4,6 +4,7 @@ from datetime import datetime
 from api.config.dbConfig import db, router
 from api.model.db import Project
 from api.schemas.schemas import ProjectModel, ProjectSaveModel, ProjectEditModel
+from api.controller.deleteall import ProjectDeleter
 
  
 @router.get("/GetAllProjects", response_model=List[ProjectModel], tags=['Project'])
@@ -76,11 +77,11 @@ def update_project(id_project: int, project: ProjectEditModel):
         return {"error": str(e)}
  
 
-@router.delete("/DeleteProjects/{project_id}", tags=['Project'])
-def delete_project(project_id: int):
-    deleted_project = Project.objects(id_project=project_id).first()
+@router.delete("/DeleteProjects/{id_project}", tags=['Project'])
+def delete_project(id_project: int):
+    deleted_project = Project.objects(id_project=id_project).first()
     if deleted_project:
-        deleted_project.delete()
+        ProjectDeleter().delete_project_and_related_objects(id_project)
         return {"message": "Projeto excluído com sucesso"}
     else:
         raise HTTPException(status_code=404, detail="Project not found")

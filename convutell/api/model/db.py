@@ -31,8 +31,8 @@ class Project(Document):
     fl_active = IntField(default=0, required=True, max_value=1)
     in_execution = IntField(default=0, required=True, max_value=1)
     type_project = IntField(default=0, required=True, max_value=1) 
-    connection_origin1 = IntField(default=0, required=True, unique=False)
-    connection_origin2 = IntField(default=0, required=True, unique=False)
+    connection_origin1 = IntField(default=0, required=False, unique=False)
+    connection_origin2 = IntField(default=0, required=False, unique=False)
 
 class Query(Document):
     id_query = SequenceField(primary_key=True, required=True)

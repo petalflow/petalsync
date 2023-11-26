@@ -4,7 +4,7 @@ from typing import List
 from api.config.dbConfig import db, router
 from api.model.db import ConnectionDestination
 from api.schemas.schemas import ConnectionDestinationModel, ConnectionDestinationSaveModel
-
+from api.controller.deleteall import ConnectionDestinationDeleter
 
 router = APIRouter()
 
@@ -82,7 +82,7 @@ def update_connection(id_connection: int, connection: ConnectionDestinationSaveM
 def delete_connection(id_connection: int):
     deleted_connection = ConnectionDestination.objects(id_connection=id_connection).first()
     if deleted_connection:
-        deleted_connection.delete()
+        ConnectionDestinationDeleter().delete_connection_destination(id_connection)
         return {"message": "Connection deleted successfully"}
     else:
         return {"message": "No connection found with this id_connection"}

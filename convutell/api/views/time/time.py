@@ -16,19 +16,16 @@ def get_times():
 @router.get("/GetTimesId/{id_project}", response_model=List[TimeModel], tags=['Time'])
 def get_time(id_project: int):
     try:
-        time_list = []
         times = Time.objects(id_project=id_project).all()
-        if times:
-            for time_obj in times:
-                time_dict = {
-                    "id_time": time_obj.id_time,
-                    "id_project": time_obj.id_project,
-                    "time": time_obj.time,
-                }
-                time_list.append(time_dict)
-            return time_list
-        else:
-            return time_list
+        time_data = [
+            TimeModel(
+                id_project=time.id_project,
+                id_time=time.id_time,
+                time=time.time
+            )
+            for time in times
+        ]
+        return time_data
     except Exception as e:
         raise ValueError({str(e)})
 

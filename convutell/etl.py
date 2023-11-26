@@ -107,36 +107,38 @@ class DataMigration:
         current_time = datetime.now().time()
         current_time_str = current_time.strftime("%H:%M:%S")
         times = Time.objects(time=current_time_str)
-
         connections_list = []
-
         for time_obj in times:
             project = Project.objects(id_project=time_obj.id_project, fl_active=1,
                                  connection_origin1__ne=0, connection_origin2__ne=0).first()
-            
             if project.type_project == 1:
                 pyscript = Scripts.objects(id_project=project.id_project).order_by('nr_execution_order').all()
+                try:
+                    if pyscript:
+                        for script in pyscript:
+                            id_project = script.id_project
+                            script_name = script.script_name
+                            ds_script = script.ds_script
+                            nr_execution_order = script.nr_execution_order
 
-                if pyscript:
-                    for script in pyscript:
-                        id_project = script.id_project
-                        script_name = script.script_name
-                        ds_script = script.ds_script
-                        nr_execution_order = script.nr_execution_order
+                            print(f"Script: {script_name}")
+                            print(f"Script: {ds_script}")
+                            print(f"Script: {nr_execution_order}")
 
-                        logger = Logger()
+                            logger = Logger()
 
-                        print(f"Script: {script_name}")
-                        print(f"Script: {ds_script}")
-                        print(f"Script: {nr_execution_order}")
+                            logger.log_entry(id_project, "Início da ETL", error=False)
+                            script_runner = ScritpExecPy(ds_script)
+                            script_runner.execute_script()
 
-                        logger.log_entry(id_project, "Início da ETL", error=False)
-                        script_runner = ScritpExecPy(ds_script)
-                        script_runner.execute_script()
-
-                        print(f"Script: {script_runner}")
-                        
-                        logger.log_entry(id_project, "Finalizando ETL", error=False)      
+                            #print(f"Script: {script_runner}")
+                            
+                            logger.log_entry(id_project, "Finalizando ETL", error=False)
+                    else:
+                        logger.log_entry(id_project, "Nenhum script encontrado para o projeto.")
+                except Exception as e:
+                    logger.log_entry(id_project, f"Erro ao executar o script: {str(e)}", error=True)
+                    logger.log_entry(id_project, "Script finalizado como erro")      
 
             else:
                 if project:
@@ -238,8 +240,8 @@ class DataMigration:
 
                 logger.log_entry(project_id, "Finalizando ETL")
                 ProjectUpdater.update_last_run(project_id)
-            else:
-                logger.log_entry(project_id, "Nenhuma consulta encontrada para o projeto.", error=True)
+        else:
+            logger.log_entry(project_id, "Nenhuma consulta encontrada para o projeto.", error=True)
 
     def run(self):
          while True:

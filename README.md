@@ -4,7 +4,7 @@
 É uma aplicação web/API criada com o framework FastAPI do Python. A aplicação se conecta a um banco de dados e permite realizar consultas SQL através de uma interface web bem como agendar script python e sql com intervalos de operações de transferência e persistência em banco de dados em diferentes servidores. 
 
 
-[![Demonstração](https://github.com/petalsync/autpetalsync/blob/main/petalsync/api/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
+[![Demonstração](https://github.com/convutell/autconvutell/blob/main/petalsync/api/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
 
 
 

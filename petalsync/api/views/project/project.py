@@ -1,7 +1,8 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from datetime import datetime
-from api.config.dbConfig import db, router
+from api.config.dbConfig import router
+from api.config.dbConfig import db  # Importe a instância db do dbConfig
 from api.model.db import Project
 from api.schemas.schemas import ProjectModel, ProjectSaveModel, ProjectEditModel
 from api.controller.deleteall import ProjectDeleter
@@ -51,7 +52,7 @@ def create_project(type_project: int, project: ProjectSaveModel):
     type_project = 1 if type_project != 0 else 0
     new_project = Project(
         name_project=project.name_project,
-        dt_last_run=datetime.combine(project.dt_last_run, datetime.min.time()).isoformat(),
+        dt_last_run=datetime.combine(project.dt_last_run, datetime.min.time()),
         fl_active=project.fl_active,
         type_project=type_project,
         connection_origin1=project.connection_origin1,

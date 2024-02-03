@@ -11,7 +11,7 @@ from mongoengine import (
 )
 import re
 
-from api.config.dbConfig import db
+#from api.config.dbConfig import db
 
 # Definir as classes de documentos
 class ConnectionDestination(Document):

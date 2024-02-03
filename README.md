@@ -1,10 +1,10 @@
 
-### Convutell
+### petalsync
 
 É uma aplicação web/API criada com o framework FastAPI do Python. A aplicação se conecta a um banco de dados e permite realizar consultas SQL através de uma interface web bem como agendar script python e sql com intervalos de operações de transferência e persistência em banco de dados em diferentes servidores. 
 
 
-[![Demonstração](https://github.com/convutell/autconvutell/blob/main/convutell/api/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
+[![Demonstração](https://github.com/petalsync/autpetalsync/blob/main/petalsync/api/assets/capa.png)](https://www.youtube.com/watch?v=y3wszkN3T6s&ab_channel=ClaytonSilva)
 
 
 
@@ -62,16 +62,18 @@ MONGODB_CONNECTION_STRING_DB = nameColletion
 Para executar o projeto, é necessário seguir os seguintes passos:
 
 - Clonar o repositório do projeto do Github.
-- Instalar as dependências através do comando 
+- Instalar as dependências através do comando
+
+Necessário possuir o gerenciador de pacotes [Poetry](https://python-poetry.org/docs/cli/)
 
 ```bash
-pip install -r requirements.txt
+poetry install
 ```
 O API de integração é construída sobre o FastAPI *0.95.1* e o Python 3.7. Toda adaptação poderá ser realizada em verões subsequentes. 
 
 - Executar o servidor web com o comando 
 ```bash
-uvicorn app:app --reload
+uvicorn main:app --reload
 ```
 ### Instalando no Docker
 
@@ -90,7 +92,7 @@ sudo docker-compose down
 Execute no seu navegador a interface de gerenciamento da aplicação. 
 
 ```bash
-172.17.0.2:8501/
+172.0.0.1:5000/projects
 ```
 
 Verifique o endereço local do seu container docker e confirme o uso na porta 8501.
@@ -100,16 +102,16 @@ Optamos por utilizar o Supervisor para monitoramento e controle dos nossos proce
 ```bash
 
 [program:etl]
-command=/opt/venv/bin/python /convutell/etl.py
-directory=/convutell
+command=/opt/venv/bin/python /petalsync/etl.py
+directory=/petalsync
 autostart=true
 autorestart=true
 startretries=3
 redirect_stderr=true
-stdout_logfile=/convutell/logs/etl/etl.log
+stdout_logfile=/petalsync/logs/etl/etl.log
 stdout_logfile_maxbytes=10MB
 ```
-O código apresentado configura um processo chamado "etl" usando o Supervisor. Esse processo é executado por um comando específico, que é a execução de um arquivo Python chamado "etl.py" dentro de um ambiente virtual. O diretório de trabalho para esse processo é definido com o mesmo nome do diretório da nossa aplicação "/convutell". O processo é configurado para iniciar automaticamente e reiniciar em caso de falha, com um máximo de três tentativas de inicialização. Os erros de saída são redirecionados para o arquivo de log "etl.log", localizado na pasta de logs "/convutell/logs/etl", e o tamanho máximo desse arquivo de log é limitado a 10MB. Essa configuração garante que o processo "etl" seja gerenciado pelo Supervisor, registrando sua saída e reiniciando-o automaticamente se necessário.
+O código apresentado configura um processo chamado "etl" usando o Supervisor. Esse processo é executado por um comando específico, que é a execução de um arquivo Python chamado "etl.py" dentro de um ambiente virtual. O diretório de trabalho para esse processo é definido com o mesmo nome do diretório da nossa aplicação "/petalsync". O processo é configurado para iniciar automaticamente e reiniciar em caso de falha, com um máximo de três tentativas de inicialização. Os erros de saída são redirecionados para o arquivo de log "etl.log", localizado na pasta de logs "/petalsync/logs/etl", e o tamanho máximo desse arquivo de log é limitado a 10MB. Essa configuração garante que o processo "etl" seja gerenciado pelo Supervisor, registrando sua saída e reiniciando-o automaticamente se necessário.
 
 ### Interface Web
 
@@ -124,7 +126,7 @@ Você pode obter o código-fonte do projeto clonando o repositório a partir do 
 
 
 ```bash
-https://github.com/convutell/convutell-in.git
+https://github.com/petalsync/petalsync-in.git
 ```
 
 Executando a Aplicação:
@@ -149,7 +151,7 @@ Isso irá construir e executar os contêineres necessários, garantindo que a ap
 
 Após essas etapas, você poderá acessar a interface web por meio do navegador em `http://127.0.0.1:5000/projects/` e começar a usar a ferramenta para agendar e gerenciar seus scripts de forma eficaz.
 
-![interface](https://github.com/convutell/autconvutell/blob/main/convutell/api/assets/interface.png)
+![interface](https://github.com/petalsync/autpetalsync/blob/main/petalsync/api/assets/interface.png)
 
 Algumas funcionalidades da aplicaçção.
 

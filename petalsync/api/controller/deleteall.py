@@ -1,5 +1,5 @@
 
-from api.config.dbConfig import db
+#from api.config.dbConfig import db
 from api.model.db import Project, ConnectionDestination, Query, Scripts, Log, Time
 
 class ProjectDeleter:

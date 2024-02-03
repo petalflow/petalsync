@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import Depends, Header, HTTPException
 from typing import List
-from api.config.dbConfig import db, router
+from api.config.dbConfig import router
 from api.model.db import ConnectionDestination
 from api.schemas.schemas import ConnectionDestinationModel, ConnectionDestinationSaveModel
 from api.controller.deleteall import ConnectionDestinationDeleter

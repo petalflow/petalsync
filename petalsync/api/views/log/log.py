@@ -1,7 +1,7 @@
 from fastapi import Depends, Header, HTTPException
 from typing import List
 from datetime import datetime
-from api.config.dbConfig import db, router
+from api.config.dbConfig import router
 from api.model.db import Log, Query
 from api.schemas.schemas import LogModel, LogSaveModel
  

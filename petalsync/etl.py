@@ -8,6 +8,7 @@ from datetime import datetime
 import sqlalchemy
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import insert
+from api.config.dbConfig import db
 from api.model.db import ConnectionDestination, Project, Time, Query, Scripts, Log
 from mysql.connector import connect
 
@@ -20,6 +21,7 @@ class ConexaoBancoDados:
         if self.ds_conexao.startswith('mysql'):
             self.engine = create_engine(self.ds_conexao)
         elif self.ds_conexao.startswith('postgresql'):
+            self.ds_conexao = self.ds_conexao.replace("?charset=utf8", "")
             self.engine = create_engine(self.ds_conexao)
         elif self.ds_conexao.startswith('sqlite'):
             self.engine = create_engine(self.ds_conexao)

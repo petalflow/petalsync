@@ -151,7 +151,7 @@ Isso irá construir e executar os contêineres necessários, garantindo que a ap
 
 Após essas etapas, você poderá acessar a interface web por meio do navegador em `http://127.0.0.1:5000/projects/` e começar a usar a ferramenta para agendar e gerenciar seus scripts de forma eficaz.
 
-![interface](https://github.com/petalsync/autpetalsync/blob/main/petalsync/api/assets/interface.png)
+![interface](https://github.com/convutell/autconvutell/blob/main/petalsync/api/assets/interface.png)
 
 Algumas funcionalidades da aplicaçção.
 

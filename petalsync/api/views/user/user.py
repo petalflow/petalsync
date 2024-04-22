@@ -37,3 +37,4 @@ def create_user(new_user: UserModel):
         roles=new_user.roles
     )
     user.save()
+ 

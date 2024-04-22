@@ -1,8 +1,16 @@
 
 from pydantic import BaseModel
 from datetime import datetime, date, time
+from typing import List
 
- 
+
+class TagModel(BaseModel):
+    id_tag: int
+    name: str
+
+class TagSaveModel(BaseModel):
+    name: str
+    
 class ProjectModel(BaseModel):
     id_project: int
     name_project: str
@@ -12,6 +20,7 @@ class ProjectModel(BaseModel):
     type_project: int
     connection_origin1: int
     connection_origin2: int
+    
 
 class ProjectSaveModel(BaseModel):
     name_project: str
@@ -20,6 +29,7 @@ class ProjectSaveModel(BaseModel):
     type_project: int
     connection_origin1: int
     connection_origin2: int
+  
 
 class ProjectEditModel(BaseModel):
     name_project: str

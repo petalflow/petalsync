@@ -25,15 +25,28 @@ class ConnectionDestination(Document):
     ds_database = StringField(required=True, max_length=100)
     ds_connector = StringField(required=True, max_length=100)
     
+
+class Tag(Document):
+    id_tag = SequenceField(primary_key=True, required=True)
+    name = StringField(unique=True, required=True, max_length=50)
+    
+
 class Project(Document):
     id_project = SequenceField(primary_key=True, required=True)
     name_project = StringField(unique=True, required=True, max_length=100)
     dt_last_run = DateTimeField(required=True)
     fl_active = IntField(default=0, required=True, max_value=1)
     in_execution = IntField(default=0, required=True, max_value=1)
-    type_project = IntField(default=0, required=True, max_value=1) 
+    type_project = IntField(default=0, required=True, max_value=1)
     connection_origin1 = IntField(default=0, required=False, unique=False)
     connection_origin2 = IntField(default=0, required=False, unique=False)
+    tags = ListField(ReferenceField(Tag, reverse_delete_rule=4), default=[])
+
+    meta = {
+        'indexes': [
+            {'fields': ['tags'], 'unique': True}
+        ]
+    }
 
 class Query(Document):
     id_query = SequenceField(primary_key=True, required=True)

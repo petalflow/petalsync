@@ -31,7 +31,7 @@ from api.views.time import time
 from api.views.ds_type_query import _type
 from api.views.script import script
 from api.views.user import user
-
+from api.views.tags import tags
 
 
 app.include_router(project.router)
@@ -42,4 +42,5 @@ app.include_router(time.router)
 app.include_router(_type.router)
 app.include_router(script.router)
 app.include_router(user.router)
+app.include_router(tags.router)
 

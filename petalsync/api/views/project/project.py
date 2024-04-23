@@ -7,7 +7,8 @@ from api.model.db import Project
 from api.schemas.schemas import ProjectModel, ProjectSaveModel, ProjectEditModel
 from api.controller.deleteall import ProjectDeleter
 
- 
+from api.schemas.schemas import TagModel, TagSaveModel
+from api.model.db import Tag
 @router.get("/GetAllProjects", response_model=List[ProjectModel], tags=['Project'])
 def get_projects():
     projects = Project.objects().all()
@@ -21,6 +22,7 @@ def get_projects():
             type_project=project.type_project,
             connection_origin1=project.connection_origin1,
             connection_origin2=project.connection_origin2,
+            tags=project.tags
         )
         for project in projects
     ]
@@ -35,6 +37,7 @@ def get_project(id_project: int):
                 id_project=project.id_project,
                 name_project=project.name_project,
                 dt_last_run=project.dt_last_run,
+                descritpion=project.descritpion,
                 fl_active=project.fl_active,
                 in_execution=project.in_execution,
                 type_project=project.type_project,
@@ -50,16 +53,39 @@ def get_project(id_project: int):
 @router.post("/CreateProjects/{type_project}", response_model=ProjectSaveModel, tags=['Project'])
 def create_project(type_project: int, project: ProjectSaveModel):
     type_project = 1 if type_project != 0 else 0
+
     new_project = Project(
         name_project=project.name_project,
         dt_last_run=datetime.combine(project.dt_last_run, datetime.min.time()),
+        descritpion=project.descritpion,
         fl_active=project.fl_active,
         type_project=type_project,
         connection_origin1=project.connection_origin1,
-        connection_origin2=project.connection_origin2
+        connection_origin2=project.connection_origin2,
     )
     new_project.save()
-    return project
+
+    project_tags = {}
+    for tag_name in project.tags:
+        tag = Tag.objects(name=tag_name).first()
+        if not tag:
+            # Se a tag não existir, crie-a
+            tag = Tag(name=tag_name)
+            tag.save()
+        # Associe o nome da tag ao dicionário de tags com a chave sendo o ID da tag convertido para string
+        project_tags[str(tag.id_tag)] = tag.name
+
+    # Atribua o dicionário de tags ao projeto
+    new_project.tags = project_tags
+    new_project.save()
+
+    return new_project.to_mongo().to_dict()
+
+
+
+
+
+
 
 @router.put("/GetProjectsId/{id_project}", response_model=ProjectEditModel, tags=['Project'])
 def update_project(id_project: int, project: ProjectEditModel):
@@ -67,6 +93,7 @@ def update_project(id_project: int, project: ProjectEditModel):
         existing_project = Project.objects(id_project=id_project).first()
         if existing_project:
             existing_project.name_project = project.name_project
+            existing_project.descritpion = project.descritpion
             existing_project.fl_active = project.fl_active
             existing_project.connection_origin1 = project.connection_origin1
             existing_project.connection_origin2 = project.connection_origin2

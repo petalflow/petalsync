@@ -7,6 +7,7 @@ from mongoengine import (
     IntField,
     ValidationError,
     ListField,
+    DictField,
     ReferenceField,
     connect
 )
@@ -35,18 +36,21 @@ class Project(Document):
     id_project = SequenceField(primary_key=True, required=True)
     name_project = StringField(unique=True, required=True, max_length=100)
     dt_last_run = DateTimeField(required=True)
+    descritpion = StringField(max_length=1000)
     fl_active = IntField(default=0, required=True, max_value=1)
     in_execution = IntField(default=0, required=True, max_value=1)
     type_project = IntField(default=0, required=True, max_value=1)
     connection_origin1 = IntField(default=0, required=False, unique=False)
     connection_origin2 = IntField(default=0, required=False, unique=False)
-    tags = ListField(ReferenceField(Tag, reverse_delete_rule=4), default=[])
+    
+    tags = DictField()
 
     meta = {
         'indexes': [
-            {'fields': ['tags'], 'unique': True}
+            {'fields': ['tags'], 'unique': False}
         ]
     }
+
 
 class Query(Document):
     id_query = SequenceField(primary_key=True, required=True)

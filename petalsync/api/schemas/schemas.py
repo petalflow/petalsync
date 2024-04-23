@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 from datetime import datetime, date, time
-from typing import List
+from typing import List, Optional
 
 
 class TagModel(BaseModel):
@@ -10,6 +10,9 @@ class TagModel(BaseModel):
 
 class TagSaveModel(BaseModel):
     name: str
+
+    class Config:
+        orm_mode = True
     
 class ProjectModel(BaseModel):
     id_project: int
@@ -20,22 +23,29 @@ class ProjectModel(BaseModel):
     type_project: int
     connection_origin1: int
     connection_origin2: int
-    
+    #tags: Optional[List]
+
+
+    class Config:
+        orm_mode = True
 
 class ProjectSaveModel(BaseModel):
     name_project: str
     dt_last_run: datetime
+    descritpion: str
     fl_active: int
     type_project: int
     connection_origin1: int
     connection_origin2: int
-  
+    tags: List[str]
 
 class ProjectEditModel(BaseModel):
     name_project: str
+    descritpion: str
     fl_active: int
     connection_origin1: int
     connection_origin2: int
+    tags: List[str]
 
 class ConnectionDestinationModel(BaseModel):
     id_connection: int

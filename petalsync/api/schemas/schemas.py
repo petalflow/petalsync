@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 from datetime import datetime, date, time
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 
 class TagModel(BaseModel):
@@ -23,8 +23,7 @@ class ProjectModel(BaseModel):
     type_project: int
     connection_origin1: int
     connection_origin2: int
-    #tags: Optional[List]
-
+    tags: Dict[str, str] = {}
 
     class Config:
         orm_mode = True
@@ -45,7 +44,7 @@ class ProjectEditModel(BaseModel):
     fl_active: int
     connection_origin1: int
     connection_origin2: int
-    tags: List[str]
+    tags: Optional[Dict[str, str]] = None 
 
 class ConnectionDestinationModel(BaseModel):
     id_connection: int

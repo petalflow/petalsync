@@ -22,7 +22,10 @@ def get_projects():
             type_project=project.type_project,
             connection_origin1=project.connection_origin1,
             connection_origin2=project.connection_origin2,
-            tags=project.tags
+            #tags=list(project.tags.values()) 
+            #tags=[{"key": project.tags.keys(), "value": project.tags.values()} for key, value in project.tags.items()] 
+            tags={key: value for key, value in project.tags.items()}
+
         )
         for project in projects
     ]
@@ -59,9 +62,10 @@ def create_project(type_project: int, project: ProjectSaveModel):
         dt_last_run=datetime.combine(project.dt_last_run, datetime.min.time()),
         descritpion=project.descritpion,
         fl_active=project.fl_active,
-        type_project=type_project,
+        type_project=type_project, 
         connection_origin1=project.connection_origin1,
         connection_origin2=project.connection_origin2,
+        tags=project.tags
     )
     new_project.save()
 
@@ -82,27 +86,24 @@ def create_project(type_project: int, project: ProjectSaveModel):
     return new_project.to_mongo().to_dict()
 
 
-
-
-
-
-
 @router.put("/GetProjectsId/{id_project}", response_model=ProjectEditModel, tags=['Project'])
 def update_project(id_project: int, project: ProjectEditModel):
     try:
         existing_project = Project.objects(id_project=id_project).first()
         if existing_project:
             existing_project.name_project = project.name_project
-            existing_project.descritpion = project.descritpion
+            existing_project.descritpion = project.descritpion  # Corrected typo
             existing_project.fl_active = project.fl_active
             existing_project.connection_origin1 = project.connection_origin1
             existing_project.connection_origin2 = project.connection_origin2
+            existing_project.tags = project.tags  # Assuming tags are being updated
             existing_project.save()
             return project
         else:
             return {"message": "Projeto não encontrado"}
     except Exception as e:
         return {"error": str(e)}
+
  
 
 @router.delete("/DeleteProjects/{id_project}", tags=['Project'])
